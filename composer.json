@@ -17,7 +17,7 @@
     ],
     "require": {
         "php": "^8.3",
-        "izaghar/xivapi-php": "^1.0",
+        "izaghar/xivapi-php": "^2.0",
         "illuminate/support": "^11.0|^12.0",
         "illuminate/http": "^11.0|^12.0"
     },
