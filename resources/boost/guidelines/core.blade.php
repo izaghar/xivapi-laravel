@@ -50,10 +50,42 @@ $results = XivApi::search()
 use XivApi\Laravel\Facades\XivApi;
 use XivApi\Query\SearchQuery;
 
-$query = SearchQuery::on('Name')->contains('Potion')
-    ->andMust()->on('LevelItem')->greaterOrEqual(10);
+$query = SearchQuery::where('Name')->contains('Potion')
+    ->where('LevelItem')->greaterOrEqual(10);
 
 $results = XivApi::search()->query($query)->sheets(['Item'])->get();
+</code-snippet>
+@endverbatim
+
+@verbatim
+<code-snippet name="SearchQuery shortcuts" lang="php">
+use XivApi\Query\SearchQuery;
+
+// Shortcut syntax
+$query = SearchQuery::where('Name', 'Potion')           // equals
+    ->where('LevelItem', '>=', 10)                       // operator
+    ->whereNot('Name', '~', 'Hi-');                      // must not contain
+
+// OR conditions
+$query = SearchQuery::where('Level', 80)
+    ->orWhere('Level', 90);
+
+// Groups
+$query = SearchQuery::where('Category', 'Weapon')
+    ->whereGroup(fn($g) => $g
+        ->orWhere('Level', 80)
+        ->orWhere('Level', 90)
+    );
+
+// Array fields
+$query = SearchQuery::whereHas('BaseParam', fn($q) => $q
+    ->where('Name', 'Strength')
+);
+
+// Localization
+$query = SearchQuery::where('Name')
+    ->localizedTo(Language::Japanese)
+    ->contains('ポーション');
 </code-snippet>
 @endverbatim
 
