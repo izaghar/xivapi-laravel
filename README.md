@@ -94,6 +94,67 @@ $item = $api->sheet('Item')->row(4)->get();
 $api = app('xivapi');
 ```
 
+## Laravel Data Integration
+
+This package provides a normalizer for [spatie/laravel-data](https://spatie.be/docs/laravel-data) to convert XIVAPI responses directly into Data DTOs.
+
+### Installation
+
+```bash
+composer require spatie/laravel-data
+```
+
+### Usage
+
+Register the normalizer in your Data class:
+
+```php
+use Spatie\LaravelData\Data;
+use XivApi\Laravel\Normalizers\XivApiNormalizer;
+
+class ItemData extends Data
+{
+    public function __construct(
+        public int $rowId,
+        public array $fields,
+    ) {}
+
+    public static function normalizers(): array
+    {
+        return [
+            XivApiNormalizer::class,
+        ];
+    }
+}
+```
+
+Then create Data objects directly from XIVAPI responses:
+
+```php
+use XivApi\Laravel\Facades\XivApi;
+
+$response = XivApi::sheet('Item')->row(4)->get();
+$item = ItemData::from($response);
+```
+
+### Global Configuration
+
+To use the normalizer globally for all Data classes, add it to your `config/data.php`:
+
+```php
+// config/data.php
+return [
+    'normalizers' => [
+        \XivApi\Laravel\Normalizers\XivApiNormalizer::class,
+        \Spatie\LaravelData\Normalizers\ModelNormalizer::class,
+        \Spatie\LaravelData\Normalizers\ArrayableNormalizer::class,
+        \Spatie\LaravelData\Normalizers\ObjectNormalizer::class,
+        \Spatie\LaravelData\Normalizers\ArrayNormalizer::class,
+        \Spatie\LaravelData\Normalizers\JsonNormalizer::class,
+    ],
+];
+```
+
 ## License
 
 MIT
