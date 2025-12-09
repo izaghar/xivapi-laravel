@@ -49,9 +49,17 @@ use XivApi\Laravel\Facades\XivApi;
 // Fetch an item
 $item = XivApi::sheet('Item')->row(4)->get();
 
-// Search
+// Search with query string
 $results = XivApi::search()
-    ->query('Name~"Potion"')
+    ->query('+Name~"Potion" +LevelItem>=10')
+    ->sheets(['Item'])
+    ->get();
+
+// Search with SearchQuery builder
+use XivApi\Query\SearchQuery;
+
+$results = XivApi::search()
+    ->query(SearchQuery::where('Name')->contains('Potion'))
     ->sheets(['Item'])
     ->get();
 
